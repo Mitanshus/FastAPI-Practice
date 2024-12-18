@@ -9,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.routers.users import user_router
+from app.routers.credits import credits_router
+from app.routers.chats import chats_router
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -26,6 +28,9 @@ main_router = APIRouter()
 # Include your routers
 app.include_router(main_router)
 app.include_router(user_router, prefix="/api", tags=["users"])
+app.include_router(credits_router, prefix="/api", tags=["credits"])
+app.include_router(chats_router, prefix="/api", tags=["credits"])
+
 
 
 

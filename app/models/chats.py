@@ -13,21 +13,21 @@ from app.utils.utils import generate_uuid
 class GenRPTStatusCode(enum.Enum):
     """Represents a genrpt_status_code enum."""
 
-    ZERO = 0
-    ONE = 1
-    TWO = 2
-    THREE = 3
-    FOUR = 4
+    PROCESS_INITIALIZED = 0
+    FORMATTED_QUESTION = 1
+    RESPONSE_TYPE_DETERMINATION = 2
+    QUERY_GENERATION = 3
+    OUTPUT_PARSING = 4
 
 
 class GenRPTErrorCode(enum.Enum):
     """Represents a genrpt_error_code enum."""
 
-    ZERO = 0
-    ONE = 1
-    TWO = 2
-    THREE = 3
-    FOUR = 4
+    NO_ERROR = 0
+    FORMATTED_QUESTION_FAILURE = 1
+    RESPONSE_TYPE_DETERMINATION_ERROR = 2
+    QUERY_GENERATION_FAILURE = 3
+    OUTPUT_PARSING_ERROR = 4
 
 
 class Chats(Base):

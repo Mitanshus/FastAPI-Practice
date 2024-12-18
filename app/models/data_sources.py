@@ -13,14 +13,19 @@ from app.utils.utils import generate_uuid
 class ProcessStatus(enum.Enum):
     """Represents a process_status enum."""
 
-    ONE = 1
-    TWO = 2
-    THREE = 3
-    FOUR = 4
-    FIVE = 5
-    SIX = 6
-    SEVEN = 7
-    EIGHT = 8
+   # Data source upload and preparation steps
+    DATA_SOURCE_UPLOADED = 1
+    NO_FILTER_COLUMNS_READY_FOR_CLEANING = 2
+    FILTER_OR_HIDDEN_COLUMNS_PROMPT = 3
+    FILTERED_READY_FOR_CLEANING = 4
+
+    # Data cleaning and data dictionary steps
+    DATA_CLEANED_READY_FOR_DICTIONARY = 5
+    DICTIONARY_GENERATED_AWAITING_CONFIRM = 6
+    DICTIONARY_APPROVED_READY_FOR_QUERIES = 7
+
+    # Data source status
+    DATA_SOURCE_DEACTIVATED = 8
 
 
 class DataSources(Base):

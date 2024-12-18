@@ -6,6 +6,7 @@ from datetime import datetime
 
 
 from app.models import CreditLedgers
+from app.models.chats import Chats
 from app.models.users import Users
 
 def db_get_user_details(db:Session):
@@ -20,6 +21,7 @@ def db_get_user_details(db:Session):
     user_details=[]
     for user in users:
         credits=db.query(CreditLedgers).filter(CreditLedgers.user_id==user.id).first()
+        total_chats=db.query(Chats).filter(Chats.user_id==user.id).count()
         print(credits)
         
         user_details.append({
@@ -30,6 +32,7 @@ def db_get_user_details(db:Session):
             "total_creits":credits.total_credits,
             "available_credits":credits.available_credits,
             "credits_expiry":credits.expiry_date.isoformat() if credits.expiry_date else None,
+            "total_chats":total_chats
         })
     return user_details
 
