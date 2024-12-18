@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect, Table, MetaData
 
+from app.models.users import Users
 from jwt_utils import create_token
 
 def get_items(db: Session):
@@ -16,9 +17,9 @@ def get_items(db: Session):
 
     return all_items
 
-def authenticate_user(username: str, password: str, db: Session):
-    # Replace with your user authentication logic
-    user = db.query(users).filter_by(username=username).first()
+def authenticate_user(email: str, password: str, db: Session):
+    users = db.query(Users).all()
+    user = db.query(users).filter_by(email=email).first()
     if user and user.check_password(password):
         token = create_token({"user_id": user.id})
         return token

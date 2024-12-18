@@ -1,18 +1,56 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-from database import get_db
-from crud import authenticate_user, get_items
+"""Imported necessary models to initialize FastAPI server."""
 
+import os
+
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import APIRouter, FastAPI, HTTPException, Request, logger
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from app.routers.users import user_router
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Access the "port" environment variable
+port: int = int(os.getenv("PORT", "4000"))
+origins = os.getenv("ORIGIN", '["http://localhost:5173"]')
+
+# creating fastapi app
 app = FastAPI()
 
-@app.get("/items/")
-def read_items(db: Session = Depends(get_db)):
-    return get_items(db)
+# main entry point
+main_router = APIRouter()
+
+# Include your routers
+app.include_router(main_router)
+app.include_router(user_router, prefix="/api", tags=["users"])
 
 
-@app.post("/login")
-def login(username: str, password: str, db: Session = Depends(get_db)):
-    token = authenticate_user(username, password, db)
-    if not token:
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-    return {"token": token}
+
+# Add the CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(_request: Request, exc: HTTPException):
+    """Handle HTTP errors raised during request processing."""
+    return JSONResponse(
+        content={
+            "message": exc.detail,
+        },
+        status_code=exc.status_code,
+    )
+
+
+def runserver():
+    """Function to run FastAPI server."""
+    logger.debug("Starting FastAPI server on %s",port)
+    uvicorn.run("app.main:app", port=port, reload=True)
