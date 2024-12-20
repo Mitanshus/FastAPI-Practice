@@ -7,25 +7,6 @@ from datetime import datetime
 from app.models.chats import Chats
 from enum import Enum
 
-class CustomJSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        elif isinstance(obj, Enum):
-            return obj.name  # or obj.value if you prefer the value
-        return super().default(obj)
-
-def serialize_model(model):
-    serialized_data = {}
-    for key, value in model.__dict__.items():
-        if key != '_sa_instance_state':
-            if isinstance(value, datetime):
-                serialized_data[key] = value.isoformat()
-            elif isinstance(value, Enum):
-                serialized_data[key] = value.name
-            else:
-                serialized_data[key] = value
-    return serialized_data
 
 def db_get_chats(db: Session, chat_id: str = None):
     """Function to fetch chats details from the database.
@@ -56,7 +37,7 @@ def db_get_specific_chats(db:Session,chat_id:str):
     """
     chat = db.query(Chats).filter(Chats.id == chat_id).first()
     if chat:
-        return serialize_model(chat)
+        return jsonable_encoder(chat)
     else:
         return {}
 
